@@ -36,8 +36,12 @@ describe("BrailleTrie", () => {
 });
 
 describe("BrailleUtils", () => {
-  test("BrailleUtils.convertPositionsToCharacter", () => {
-    // TODO: Test full character set.
-    expect(BrailleUtils.convertPositionsToCharacter([EBraillePositions.L1])).to.equal("a");
+  test("BrailleUtils.convertPositionsToCharacter - US SIXDOT CHARSET", () => {
+    const charMap = BrailleUtils.get_US_SIXDOT_BASE_CHARMAP();
+    charMap.forEach(
+      (positions: EBraillePositions[], char: string): void => {
+        expect(BrailleUtils.convertPositionsToCharacter(positions)).to.equal(char);
+      }
+    );
   });
 });

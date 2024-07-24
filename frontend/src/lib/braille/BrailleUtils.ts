@@ -31,6 +31,10 @@ export default class BrailleUtils {
     ["z", [EBraillePositions.L1, EBraillePositions.L3, EBraillePositions.R2, EBraillePositions.R3]],    
   ]);
 
+  public static readonly get_US_SIXDOT_BASE_CHARMAP = (): BrailleCharMap => {
+    return BrailleUtils.US_SIXDOT_BASE_CHARMAP;
+  };
+
   private static readonly createBaseTries = (): Map<EBraillePositions, BrailleTrie> => {
     return new Map([
       [EBraillePositions.L1, new BrailleTrie(null, EBraillePositions.L1)],

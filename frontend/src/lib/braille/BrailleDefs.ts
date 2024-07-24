@@ -1,4 +1,5 @@
 export enum EBraillePositions {
+  NONE = -1,
   L1 = 1,
   L2 = 2,
   L3 = 3,
