@@ -1,0 +1,87 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended"
+  ],
+  "rules": {
+    "import/extensions": [
+      1,
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "quotes": [
+      1,
+      "double"
+    ],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
+      }
+    ],
+    "object-shorthand": [
+      1,
+      "never"
+    ],
+    "react/jsx-boolean-value": [
+      1,
+      "always"
+    ],
+    "linebreak-style": "off",
+    "arrow-body-style": [
+      1,
+      "always"
+    ],
+    "camelcase": [
+      1,
+      {
+        "allow": [
+          "^[a-zA-Z0-9]+_[a-zA-Z0-9]+$"
+        ]
+      }
+    ],
+    "react/destructuring-assignment": "off",
+    "no-use-before-define": [
+      1,
+      {
+        "functions": false,
+        "classes": false,
+        "variables": false
+      }
+    ],
+    "react/jsx-fragments": [
+      1,
+      "element"
+    ],
+    "no-plusplus": [
+      1,
+      {
+        "allowForLoopAfterthoughts": true
+      }
+    ],
+    "max-len": [
+      1,
+      {
+        "code": 160
+      }
+    ],
+    "object-curly-newline": "off",
+    "prefer-destructuring": "off",
+    "react/require-default-props": "off",
+    "react/jsx-curly-brace-presence": "off",
+    "react/no-unescaped-entities": "off",
+    "no-shadow": "off",
+    "semi": "warn",
+    "no-unused-vars": "off"
+  }
+}
