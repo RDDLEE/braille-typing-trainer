@@ -1,7 +1,8 @@
 {
   "extends": [
     "next/core-web-vitals",
-    "eslint:recommended"
+    "eslint:recommended",
+    "plugin:storybook/recommended"
   ],
   "rules": {
     "import/extensions": [
