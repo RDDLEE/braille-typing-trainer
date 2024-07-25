@@ -15,6 +15,7 @@ export default function BrailleCircle(props: IBrailleCircle_Props) {
     } else {
       return "white";
     }
+    // TODO: Half states. Activated but not active position states.
   };
 
   const getTextColor = (): string => {

@@ -5,14 +5,26 @@ import '@mantine/core/styles.css';
 import "../src/app/layout";
 import { theme } from "../src/theme/theme";
 import { enableMapSet } from "immer";
+import { BrailleInputContext, BrailleInputContext_DEFAULT } from "../src/contexts/BrailleInputContext";
 
 const preview: Preview = {
   decorators: [
-    (Story, _storyContext) => {
-      enableMapSet()
+    (Story, storyContext) => {
+      enableMapSet();
+      const braileInputContext = { ...BrailleInputContext_DEFAULT };
+      const lastCharacter = storyContext.args["lastCharacter"];
+      if (lastCharacter !== undefined) {
+        braileInputContext.lastCharacter = lastCharacter;
+      }
+      const textHistory = storyContext.args["textHistory"];
+      if (textHistory !== undefined) {
+        braileInputContext.textHistory = textHistory;
+      }
       return (
         <MantineProvider defaultColorScheme="light" theme={theme}>
-          <Story />
+          <BrailleInputContext.Provider value={braileInputContext}>
+            <Story />
+          </BrailleInputContext.Provider>
         </MantineProvider>
       );
     },

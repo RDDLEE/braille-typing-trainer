@@ -1,4 +1,4 @@
-import { BrailleCharMap, EBraillePositions } from "./BrailleDefs";
+import { BrailleCharMap, CHARACTER_NOT_FOUND, EBraillePositions } from "./BrailleDefs";
 import BrailleTrie from "./BrailleTrie";
 
 export default class BrailleUtils {
@@ -12,7 +12,7 @@ export default class BrailleUtils {
     ["g", [EBraillePositions.L1, EBraillePositions.L2, EBraillePositions.R1, EBraillePositions.R2]],
     ["h", [EBraillePositions.L1, EBraillePositions.L2, EBraillePositions.R2]],
     ["i", [EBraillePositions.L2, EBraillePositions.R1]],
-    ["j", [EBraillePositions.L2, EBraillePositions.L1, EBraillePositions.L2]],
+    ["j", [EBraillePositions.L2, EBraillePositions.R1, EBraillePositions.R2]],
     ["k", [EBraillePositions.L1, EBraillePositions.L3]],
     ["l", [EBraillePositions.L1, EBraillePositions.L2, EBraillePositions.L3]],
     ["m", [EBraillePositions.L1, EBraillePositions.L3, EBraillePositions.R1]],
@@ -28,7 +28,7 @@ export default class BrailleUtils {
     ["w", [EBraillePositions.L2, EBraillePositions.R1, EBraillePositions.R2, EBraillePositions.R3]],
     ["x", [EBraillePositions.L1, EBraillePositions.L3, EBraillePositions.R1, EBraillePositions.R3]],
     ["y", [EBraillePositions.L1, EBraillePositions.L3, EBraillePositions.R1, EBraillePositions.R2, EBraillePositions.R3]],
-    ["z", [EBraillePositions.L1, EBraillePositions.L3, EBraillePositions.R2, EBraillePositions.R3]],    
+    ["z", [EBraillePositions.L1, EBraillePositions.L3, EBraillePositions.R2, EBraillePositions.R3]],
   ]);
 
   public static readonly get_US_SIXDOT_BASE_CHARMAP = (): BrailleCharMap => {
@@ -73,6 +73,26 @@ export default class BrailleUtils {
     }
     const trie = BrailleUtils.US_SIXDOT_BASE_TRIES.get(basePosition)!;
     return trie.convertPositionsToCharacter(positions);
+  };
+
+  public static readonly isDisplayableCharacter = (char: string | null): boolean => {
+    if (char === null) {
+      return false;
+    }
+    if (char === CHARACTER_NOT_FOUND) {
+      return false;
+    }
+    return true;
+  };
+
+  public static readonly isTextHistoryCharacter = (char: string | null): boolean => {
+    if (char === null) {
+      return false;
+    }
+    if (char === CHARACTER_NOT_FOUND) {
+      return false;
+    }
+    return true;
   };
 
 }

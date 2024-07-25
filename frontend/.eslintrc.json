@@ -4,6 +4,9 @@
     "eslint:recommended",
     "plugin:storybook/recommended"
   ],
+  "globals": {
+     "JSX": "readonly"
+  },
   "rules": {
     "import/extensions": [
       1,

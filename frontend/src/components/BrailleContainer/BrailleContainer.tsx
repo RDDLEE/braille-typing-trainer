@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { useWindowEvent } from "@mantine/hooks";
 import { Box } from "@mantine/core";
 import { produce } from "immer";
-import { BrailleInputContext, IBrailleInputContext, IBrailleInputState } from "@/contexts/BrailleInputContext";
+import { BrailleInputContext, BrailleInputContext_DEFAULT, IBrailleInputState } from "@/contexts/BrailleInputContext";
 import { EBraillePositions } from "@/lib/braille/BrailleDefs";
 import BrailleLayout from "../BrailleLayout/BrailleLayout";
+import BrailleUtils from "@/lib/braille/BrailleUtils";
 
 enum EBraileInputActions {
   ACTIVATE_POSITION = "activatePosition",
@@ -25,32 +26,52 @@ type BraileInputActions = IActivatePosition_Action | IDeactivatePosition_Action;
 
 const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActions): IBrailleInputState => {
   switch (action.type) {
-    case EBraileInputActions.ACTIVATE_POSITION:
-      return produce<IBrailleInputState>(state, 
+    case EBraileInputActions.ACTIVATE_POSITION: {
+      return produce<IBrailleInputState>(state,
         (draft): void => {
           draft.activePositions.add(action.position);
           draft.activatedPositions.add(action.position);
         }
       );
-    case EBraileInputActions.DEACTIVATE_POSITION:
+    } case EBraileInputActions.DEACTIVATE_POSITION: {
       // TODO: Need to check if all keys have been deactivated, then need to add final character.
-      return produce<IBrailleInputState>(state, 
+      const newState = produce<IBrailleInputState>(state,
         (draft): void => {
+          // NOTE: Do not remove position from activatedPositions.
           draft.activePositions.delete(action.position);
         }
       );
-    default:
-      // TODO: Handle.
+      if (newState.activePositions.size === 0) {
+        // If there are no more active positions, we need to finalize input.
+        return produce<IBrailleInputState>(newState,
+          (draft): void => {
+            const activatedPositionsSorted = Array.from(draft.activatedPositions).sort();
+            const newCharacter = BrailleUtils.convertPositionsToCharacter(activatedPositionsSorted);
+            draft.lastCharacter = {
+              // TODO: Maybe with empty string for undisplayable characters.
+              char: newCharacter,
+              time: Date.now(),
+            };
+            draft.activatedPositions.clear();
+            draft.activePositions.clear();
+            if (BrailleUtils.isTextHistoryCharacter(newCharacter)) {
+              draft.textHistory = draft.textHistory + newCharacter;
+            }            
+          }
+        );
+      } else {
+        return newState;
+      }
+    } default: {
+      console.error("BrailleContainer.brailleInputReducer called and defaulted.");
       return state;
-  } 
+    }
+  }
 };
 
 export default function BrailleContainer() {
-  const [brailleInputState, dispatchBraileInputState] = useReducer(brailleInputReducer, {
-    activatedPositions: new Set<EBraillePositions>(), 
-    activePositions: new Set<EBraillePositions>(),
-  });
-  
+  const [brailleInputState, dispatchBraileInputState] = useReducer(brailleInputReducer, { ...BrailleInputContext_DEFAULT });
+
   const onKeyDown = useCallback((event: KeyboardEvent): void => {
     // TODO: Customizable hotkeys.
     const key = event.key;
@@ -72,9 +93,9 @@ export default function BrailleContainer() {
       return;
     }
 
-    dispatchBraileInputState({ 
-      type: EBraileInputActions.ACTIVATE_POSITION, 
-      position: positionToAdd 
+    dispatchBraileInputState({
+      type: EBraileInputActions.ACTIVATE_POSITION,
+      position: positionToAdd
     });
   }, []);
 
@@ -88,7 +109,6 @@ export default function BrailleContainer() {
   }, [onKeyDown]);
 
   const onKeyUp = useCallback((event: KeyboardEvent): void => {
-    console.log(`BrailleContainer.onKeyUp called and event: ${event.key}.`);
     // TODO: Customizable hotkeys.
     const key = event.key;
     let positionToRemove = EBraillePositions.NONE;
@@ -109,9 +129,9 @@ export default function BrailleContainer() {
       return;
     }
 
-    dispatchBraileInputState({ 
-      type: EBraileInputActions.DEACTIVATE_POSITION, 
-      position: positionToRemove 
+    dispatchBraileInputState({
+      type: EBraileInputActions.DEACTIVATE_POSITION,
+      position: positionToRemove
     });
   }, []);
 
@@ -130,6 +150,6 @@ export default function BrailleContainer() {
         <BrailleLayout />
       </BrailleInputContext.Provider>
     </Box>
-    
+
   );
 }
