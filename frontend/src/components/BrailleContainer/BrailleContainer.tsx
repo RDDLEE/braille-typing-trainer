@@ -10,6 +10,7 @@ import BrailleUtils from "@/lib/braille/BrailleUtils";
 enum EBraileInputActions {
   ACTIVATE_POSITION = "activatePosition",
   DEACTIVATE_POSITION = "deactivatePosition",
+  PERFORM_TEXT_CONTROL = "performTextControl",
 }
 
 interface IActivatePosition_Action {
@@ -22,7 +23,18 @@ interface IDeactivatePosition_Action {
   position: EBraillePositions;
 }
 
-type BraileInputActions = IActivatePosition_Action | IDeactivatePosition_Action;
+enum EControlCharacters {
+  NONE = -1,
+  SPACE = 1,
+  BACKSPACE = 2,
+}
+
+interface IPerformTextControl_Action {
+  type: EBraileInputActions.PERFORM_TEXT_CONTROL;
+  control: EControlCharacters;
+}
+
+type BraileInputActions = IActivatePosition_Action | IDeactivatePosition_Action | IPerformTextControl_Action;
 
 const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActions): IBrailleInputState => {
   switch (action.type) {
@@ -46,12 +58,18 @@ const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActio
         return produce<IBrailleInputState>(newState,
           (draft): void => {
             const activatedPositionsSorted = Array.from(draft.activatedPositions).sort();
+            if (activatedPositionsSorted.length === 0) {
+              // If somehow a KeyUp event is called with no activated positions, just do nothing.
+              return;
+            }
             const newCharacter = BrailleUtils.convertPositionsToCharacter(activatedPositionsSorted);
-            draft.lastCharacter = {
-              // TODO: Maybe with empty string for undisplayable characters.
-              char: newCharacter,
-              time: Date.now(),
-            };
+            if (BrailleUtils.isDisplayableCharacter(newCharacter)) {
+              draft.lastCharacter = {
+                // TODO: Maybe with empty string for undisplayable characters.
+                char: newCharacter,
+                time: Date.now(),
+              };
+            }            
             draft.activatedPositions.clear();
             draft.activePositions.clear();
             if (BrailleUtils.isTextHistoryCharacter(newCharacter)) {
@@ -61,6 +79,32 @@ const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActio
         );
       } else {
         return newState;
+      }
+    } case EBraileInputActions.PERFORM_TEXT_CONTROL: {
+      if (action.control === EControlCharacters.SPACE) {
+        const newCharacter = " ";
+        return produce<IBrailleInputState>(state,
+          (draft): void => {
+            draft.lastCharacter = {
+              char: newCharacter,
+              time: Date.now(),
+            };
+            // FIXME: If space is entered while keys are pressed, intended behavior is not yet planned.
+            // Just allow spaces without resetting positions.
+            if (BrailleUtils.isTextHistoryCharacter(newCharacter)) {
+              draft.textHistory = draft.textHistory + newCharacter;
+            }            
+          }
+        );
+      } else if (action.control === EControlCharacters.BACKSPACE) {
+        return produce<IBrailleInputState>(state,
+          (draft): void => {
+            draft.textHistory = draft.textHistory.slice(0, -1);
+          }
+        );
+      } else {
+        console.error("BrailleContainer.brailleInputReducer called and PERFORM_TEXT_CONTROL default.");
+        return state;
       }
     } default: {
       console.error("BrailleContainer.brailleInputReducer called and defaulted.");
@@ -72,10 +116,33 @@ const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActio
 export default function BrailleContainer() {
   const [brailleInputState, dispatchBraileInputState] = useReducer(brailleInputReducer, { ...BrailleInputContext_DEFAULT });
 
+  const handleTextControlCharacters = (key: string): boolean => {
+    let controlType: EControlCharacters = EControlCharacters.NONE;
+    // FIXME: Make const.
+    if (key === " ") {
+      controlType = EControlCharacters.SPACE;
+    } else if (key === "Backspace") {
+      controlType = EControlCharacters.BACKSPACE;
+    } else {
+      return false;
+    }
+    dispatchBraileInputState({
+      type: EBraileInputActions.PERFORM_TEXT_CONTROL,
+      control: controlType,
+    });
+    return true;
+  };
+  
   const onKeyDown = useCallback((event: KeyboardEvent): void => {
     // TODO: Customizable hotkeys.
     const key = event.key;
+    const wasControlCharacter = handleTextControlCharacters(key);
+    if (wasControlCharacter) {
+      return;
+    }
+
     let positionToAdd = EBraillePositions.NONE;
+    // FIXME: Make const.
     if (key === "f") {
       positionToAdd = EBraillePositions.L1;
     } else if (key === "d") {
@@ -95,7 +162,7 @@ export default function BrailleContainer() {
 
     dispatchBraileInputState({
       type: EBraileInputActions.ACTIVATE_POSITION,
-      position: positionToAdd
+      position: positionToAdd,
     });
   }, []);
 
@@ -112,6 +179,7 @@ export default function BrailleContainer() {
     // TODO: Customizable hotkeys.
     const key = event.key;
     let positionToRemove = EBraillePositions.NONE;
+    // FIXME: Make const.
     if (key === "f") {
       positionToRemove = EBraillePositions.L1;
     } else if (key === "d") {
@@ -131,7 +199,7 @@ export default function BrailleContainer() {
 
     dispatchBraileInputState({
       type: EBraileInputActions.DEACTIVATE_POSITION,
-      position: positionToRemove
+      position: positionToRemove,
     });
   }, []);
 

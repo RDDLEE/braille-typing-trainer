@@ -11,12 +11,15 @@ export const BRAILE_LAST_CHARACTER_INPUT_DEFAULT: IBrailleLastCharacterInput = {
   time: -1,
 };
 
+export type HotkeyKey = string;
+export type PositionHotkeyMap = Map<EBraillePositions, HotkeyKey>;
+
 export interface IBrailleInputState {
   activatedPositions: Set<EBraillePositions>;
   activePositions: Set<EBraillePositions>;
   lastCharacter: IBrailleLastCharacterInput;
   textHistory: string;
-  // TODO: Characters produced.
+  // hotkeys: PositionHotkeyMap;
   // TODO: Hotkeys.
 }
 
