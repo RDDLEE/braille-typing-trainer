@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { BrailleInputContext } from "@/contexts/BrailleInputContext";
+import { BrailleInputContext } from "../../contexts/BrailleInputContext";
 import { Box, Textarea } from "@mantine/core";
 
 export default function TextHistoryDisplay() {

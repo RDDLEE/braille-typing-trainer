@@ -1,4 +1,4 @@
-import { EBraillePositions, ETextControlCharacters } from "@/lib/braille/BrailleDefs";
+import { EBraillePositions, ETextControlCharacters } from "../../lib/braille/BrailleDefs";
 import BrailleCircle from "../BrailleCircle/BrailleCircle";
 import LetterDisplay from "../LetterDisplay/LetterDisplay";
 import { Flex } from "@mantine/core";
@@ -14,7 +14,7 @@ export default function BrailleLayout(_props: IBrailleLayout_Props) {
   // TODO: Handle 6 and 8 dot.
   // TODO: Space and Backspace.
   return (
-    <React.Fragment>
+    <Flex w={"500px"} direction="column">
       <Flex justify="center" align="center" direction="row">
         <TextHistoryDisplay />
       </Flex>
@@ -34,9 +34,9 @@ export default function BrailleLayout(_props: IBrailleLayout_Props) {
         </Flex>
       </Flex>
       <Flex justify="center" align="center" direction="row" gap="xl">
-        <BrailleRect linkedPosition={ETextControlCharacters.SPACE} width={200} height={50} />
-        <BrailleRect linkedPosition={ETextControlCharacters.BACKSPACE} width={200} height={50} />
+        <BrailleRect linkedPosition={ETextControlCharacters.SPACE} width={250} height={50} />
+        <BrailleRect linkedPosition={ETextControlCharacters.BACKSPACE} width={250} height={50} />
       </Flex>
-    </React.Fragment>
+    </Flex>
   );
 }

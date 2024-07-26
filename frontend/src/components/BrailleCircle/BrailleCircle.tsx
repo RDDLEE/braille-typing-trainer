@@ -1,12 +1,20 @@
 import { useCallback, useContext } from "react";
-import { BrailleInputContext } from "@/contexts/BrailleInputContext";
-import { EBraillePositions } from "@/lib/braille/BrailleDefs";
-import BrailleUtils from "@/lib/braille/BrailleUtils";
-import HotkeyUtils from "@/lib/hotkeys/HotkeyUtils";
+import { BrailleInputContext } from "../../contexts/BrailleInputContext";
+import { EBraillePositions } from "../../lib/braille/BrailleDefs";
+import HotkeyUtils from "../../lib/hotkeys/HotkeyUtils";
 
 export interface IBrailleCircle_Props {
   linkedPosition: EBraillePositions;
 }
+
+const SVG_WIDTH = 120;
+const SVG_HEIGHT = 120;
+
+const CIRCLE_X = SVG_WIDTH / 2;
+const CIRCLE_Y = SVG_HEIGHT / 2;
+
+const TEXT_X = CIRCLE_X;
+const TEXT_Y = CIRCLE_Y;
 
 export default function BrailleCircle(props: IBrailleCircle_Props) {
   const brailleInputContext = useContext(BrailleInputContext);
@@ -35,9 +43,9 @@ export default function BrailleCircle(props: IBrailleCircle_Props) {
   // TODO: Make clickable for mobile.
   return (
     <div>
-      <svg width="120" height="120" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="60" cy="60" r="50" fill={getCircleFillColor()} stroke="black" stroke-width="4" />
-        <text x="60" y="60" text-anchor="middle" fill={getTextColor()} font-size="24" font-family="Arial" dominant-baseline="middle">
+      <svg width={SVG_WIDTH} height={SVG_HEIGHT} xmlns="http://www.w3.org/2000/svg">
+        <circle cx={CIRCLE_X} cy={CIRCLE_Y} r="50" fill={getCircleFillColor()} stroke="black" strokeWidth="4" />
+        <text x={TEXT_X} y={TEXT_Y} textAnchor="middle" fill={getTextColor()} fontSize="24" fontFamily="Arial" dominantBaseline="middle">
           {getText()}
         </text>
       </svg>

@@ -1,7 +1,7 @@
 import { useCallback, useContext } from "react";
-import { BrailleInputContext } from "@/contexts/BrailleInputContext";
-import { ETextControlCharacters } from "@/lib/braille/BrailleDefs";
-import HotkeyUtils from "@/lib/hotkeys/HotkeyUtils";
+import { BrailleInputContext } from "../../contexts/BrailleInputContext";
+import { ETextControlCharacters } from "../../lib/braille/BrailleDefs";
+import HotkeyUtils from "../../lib/hotkeys/HotkeyUtils";
 
 export interface IBrailleRect_Props {
   linkedPosition: ETextControlCharacters;
@@ -46,8 +46,8 @@ export default function BrailleRect(props: IBrailleRect_Props) {
   return (
     <div>
       <svg width={SVG_WIDTH} height={SVG_HEIGHT} xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" width={RECT_WIDTH} height={RECT_HEIGHT} rx="5" ry="5" fill={getRectFillColor()} stroke="black" stroke-width="5" />
-        <text x={TEXT_X} y={TEXT_Y} text-anchor="middle" fill={getTextColor()} font-size="12" fontWeight={700} font-family="Arial" dominant-baseline="middle">
+        <rect x="0" width={RECT_WIDTH} height={RECT_HEIGHT} rx="5" ry="5" fill={getRectFillColor()} stroke="black" strokeWidth="5" />
+        <text x={TEXT_X} y={TEXT_Y} textAnchor="middle" fill={getTextColor()} fontSize="12" fontWeight={700} fontFamily="Arial" dominantBaseline="middle">
           {getText()}
         </text>
       </svg>

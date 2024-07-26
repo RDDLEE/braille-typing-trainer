@@ -1,7 +1,7 @@
 import React from "react";
 import type { Preview } from "@storybook/react";
 import { MantineProvider } from "@mantine/core";
-import '@mantine/core/styles.css';
+import "@mantine/core/styles.css";
 import "../src/app/layout";
 import { theme } from "../src/theme/theme";
 import { enableMapSet } from "immer";

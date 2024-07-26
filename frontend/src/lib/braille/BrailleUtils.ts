@@ -1,8 +1,36 @@
-import { KeyboardPositions } from "../hotkeys/HotkeyDefs";
-import { BrailleCharMap, CHARACTER_NOT_FOUND, EBraillePositions } from "./BrailleDefs";
+import { BrailleCharMap, CHARACTER_NOT_FOUND, EBraillePositions, LetterToBraileMap } from "./BrailleDefs";
 import BrailleTrie from "./BrailleTrie";
 
 export default class BrailleUtils {
+  public static readonly US_SIX_DOT_LETTER_BRAILE_MAP: LetterToBraileMap = new Map([
+    ["a", "⠁"],
+    ["b", "⠃"],
+    ["c", "⠉"],
+    ["d", "⠙"],
+    ["e", "⠑"],
+    ["f", "⠋"],
+    ["g", "⠛"],
+    ["h", "⠓"],
+    ["i", "⠊"],
+    ["j", "⠚"],
+    ["k", "⠅"],
+    ["l", "⠇"],
+    ["m", "⠍"],
+    ["n", "⠝"],
+    ["o", "⠕"],
+    ["p", "⠏"],
+    ["q", "⠟"],
+    ["r", "⠗"],
+    ["s", "⠎"],
+    ["t", "⠞"],
+    ["u", "⠥"],
+    ["v", "⠧"],
+    ["w", "⠺"],
+    ["x", "⠭"],
+    ["y", "⠽"],
+    ["z", "⠵"],
+  ]);
+
   private static readonly US_SIXDOT_BASE_CHARMAP: BrailleCharMap = new Map([
     ["a", [EBraillePositions.L1]],
     ["b", [EBraillePositions.L1, EBraillePositions.L2]],

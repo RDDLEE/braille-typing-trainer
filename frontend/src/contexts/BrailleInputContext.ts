@@ -1,4 +1,4 @@
-import { EBraillePositions, ETextControlCharacters } from "@/lib/braille/BrailleDefs";
+import { EBraillePositions, ETextControlCharacters } from "../lib/braille/BrailleDefs";
 import { createContext } from "react";
 
 export interface IBrailleLastCharacterInput {

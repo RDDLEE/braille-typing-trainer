@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Flex, Text } from "@mantine/core";
-import { BrailleInputContext } from "@/contexts/BrailleInputContext";
+import { BrailleInputContext } from "../../contexts/BrailleInputContext";
 import classes from "./LetterDisplay.module.css";
 
 export default function LetterDisplay() {

@@ -1,12 +1,14 @@
+"use client";
+
 import { useCallback, useEffect, useReducer } from "react";
 import { useWindowEvent } from "@mantine/hooks";
 import { Box } from "@mantine/core";
 import { produce } from "immer";
-import { BrailleInputContext, BrailleInputContext_DEFAULT, IBrailleInputState } from "@/contexts/BrailleInputContext";
-import { EBraillePositions, ETextControlCharacters } from "@/lib/braille/BrailleDefs";
+import { BrailleInputContext, BrailleInputContext_DEFAULT, IBrailleInputState } from "../../contexts/BrailleInputContext";
+import { EBraillePositions, ETextControlCharacters } from "../../lib/braille/BrailleDefs";
 import BrailleLayout from "../BrailleLayout/BrailleLayout";
-import BrailleUtils from "@/lib/braille/BrailleUtils";
-import HotkeyUtils from "@/lib/hotkeys/HotkeyUtils";
+import BrailleUtils from "../../lib/braille/BrailleUtils";
+import HotkeyUtils from "../../lib/hotkeys/HotkeyUtils";
 
 enum EBraileInputActions {
   ACTIVATE_POSITION = "activatePosition",
@@ -125,8 +127,6 @@ const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActio
 export default function BrailleContainer() {
   const [brailleInputState, dispatchBraileInputState] = useReducer(brailleInputReducer, { ...BrailleInputContext_DEFAULT });
 
-  console.log("BrailleContainer called.");
-
   const onKeyDown_TextControl = useCallback((key: string): boolean => {
     let controlType: ETextControlCharacters = ETextControlCharacters.NONE;
     if (key === HotkeyUtils.getHotkeyByPosition(ETextControlCharacters.SPACE)) {
@@ -237,7 +237,7 @@ export default function BrailleContainer() {
       // TODO: Handle space and backspace.
       return;
     }
-    
+
     dispatchBraileInputState({
       type: EBraileInputActions.DEACTIVATE_POSITION,
       position: positionToRemove,

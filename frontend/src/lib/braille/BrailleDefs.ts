@@ -19,3 +19,5 @@ export enum ETextControlCharacters {
 export type BrailleCharMap = Map<string, EBraillePositions[]>;
 
 export const CHARACTER_NOT_FOUND: string = "NOT_FOUND";
+
+export type LetterToBraileMap = Map<string, string>;
