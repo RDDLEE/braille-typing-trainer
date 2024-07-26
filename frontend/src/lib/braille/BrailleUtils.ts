@@ -31,7 +31,7 @@ export default class BrailleUtils {
     ["z", [EBraillePositions.L1, EBraillePositions.L3, EBraillePositions.R2, EBraillePositions.R3]],
   ]);
 
-  public static readonly get_US_SIXDOT_BASE_CHARMAP = (): BrailleCharMap => {
+  public static readonly getUsSixDotBaseCharMap = (): BrailleCharMap => {
     return BrailleUtils.US_SIXDOT_BASE_CHARMAP;
   };
 
@@ -48,7 +48,7 @@ export default class BrailleUtils {
     ]);
   };
 
-  private static readonly init_US_SIXDOT_BASE_TRIES = (): Map<EBraillePositions, BrailleTrie> => {
+  private static readonly initUsSixDotBaseTries = (): Map<EBraillePositions, BrailleTrie> => {
     const baseTries = BrailleUtils.createBaseTries();
     BrailleUtils.US_SIXDOT_BASE_CHARMAP.forEach(
       (positions: EBraillePositions[], char: string) => {
@@ -63,7 +63,7 @@ export default class BrailleUtils {
     return baseTries;
   };
 
-  private static readonly US_SIXDOT_BASE_TRIES: Map<EBraillePositions, BrailleTrie> = BrailleUtils.init_US_SIXDOT_BASE_TRIES();
+  private static readonly US_SIXDOT_BASE_TRIES: Map<EBraillePositions, BrailleTrie> = BrailleUtils.initUsSixDotBaseTries();
 
   // TODO: Should take in a language, keyboard, dotsize, modifier mode.
   public static readonly convertPositionsToCharacter = (positions: EBraillePositions[]): string => {

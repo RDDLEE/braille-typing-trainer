@@ -3,6 +3,8 @@ import { CHARACTER_NOT_FOUND, EBraillePositions } from "./BrailleDefs";
 export class BrailleTreeNode {
   private char: string | null;
   private readonly position: EBraillePositions;
+  // NOTE: Recursive data structures are not handled well by ESLint.
+  // eslint-disable-next-line no-use-before-define
   private readonly children: Map<EBraillePositions, BrailleTreeNode> = new Map();
 
   constructor(char: string | null, position: EBraillePositions) {

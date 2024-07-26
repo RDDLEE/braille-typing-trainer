@@ -37,7 +37,7 @@ describe("BrailleTrie", () => {
 
 describe("BrailleUtils", () => {
   test("BrailleUtils.convertPositionsToCharacter - US SIXDOT CHARSET", () => {
-    const charMap = BrailleUtils.get_US_SIXDOT_BASE_CHARMAP();
+    const charMap = BrailleUtils.getUsSixDotBaseCharMap();
     charMap.forEach(
       (positions: EBraillePositions[], char: string): void => {
         expect(BrailleUtils.convertPositionsToCharacter(positions)).to.equal(char);

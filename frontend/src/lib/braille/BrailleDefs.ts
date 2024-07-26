@@ -10,6 +10,12 @@ export enum EBraillePositions {
   R4 = 8,
 }
 
+export enum ETextControlCharacters {
+  NONE = -1,
+  SPACE = 9,
+  BACKSPACE = 10,
+}
+
 export type BrailleCharMap = Map<string, EBraillePositions[]>;
 
 export const CHARACTER_NOT_FOUND: string = "NOT_FOUND";
