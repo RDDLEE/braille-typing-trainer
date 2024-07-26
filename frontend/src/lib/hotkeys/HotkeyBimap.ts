@@ -15,6 +15,13 @@ export default class HotkeyBimap {
     );
   }
 
+  public readonly isKeyInHotkeyMap = (key: string): boolean => {
+    if (this.keyMap.has(key)) {
+      return true;
+    }
+    return false;
+  };
+
   public readonly getHotkeyForKeyboardPosition = (position: KeyboardPositions): HotkeyKey => {
     const hotkey = this.positionMap.get(position);
     if (hotkey === undefined) {

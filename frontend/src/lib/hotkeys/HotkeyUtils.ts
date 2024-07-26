@@ -36,4 +36,17 @@ export default class HotkeyUtils {
     return HotkeyUtils.hotkeys.getHotkeyForKeyboardPosition(position);
   };
 
+  public static readonly isKeyInHotkeyMap = (key: string): boolean => {
+    return HotkeyUtils.hotkeys.isKeyInHotkeyMap(key);
+  };
+
+  public static readonly getDisplayableTextControlCharacter = (char: string): string => {
+    if (char === HOTKEY_SPACE_KEY_DEFAULT) {
+      return "(Space)";
+    } else if (char === HOTKEY_BACKSPACE_KEY_DEFAULT) {
+      return "(Backspace)";
+    }
+    throw new Error(`HotkeyUtils.getDisplayableTextControlCharacter and failed to map char: ${char}.`);
+  };
+
 }

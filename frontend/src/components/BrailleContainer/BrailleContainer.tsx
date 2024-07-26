@@ -11,7 +11,8 @@ import HotkeyUtils from "@/lib/hotkeys/HotkeyUtils";
 enum EBraileInputActions {
   ACTIVATE_POSITION = "activatePosition",
   DEACTIVATE_POSITION = "deactivatePosition",
-  PERFORM_TEXT_CONTROL = "performTextControl",
+  ACTIVATE_TEXT_CONTROL = "activateTextControl",
+  DEACTIVATE_TEXT_CONTROL = "deactivateTextControl",
 }
 
 interface IActivatePosition_Action {
@@ -24,12 +25,17 @@ interface IDeactivatePosition_Action {
   position: EBraillePositions;
 }
 
-interface IPerformTextControl_Action {
-  type: EBraileInputActions.PERFORM_TEXT_CONTROL;
+interface IActivateTextControl_Action {
+  type: EBraileInputActions.ACTIVATE_TEXT_CONTROL;
   control: ETextControlCharacters;
 }
 
-type BraileInputActions = IActivatePosition_Action | IDeactivatePosition_Action | IPerformTextControl_Action;
+interface IDeactivateTextControl_Action {
+  type: EBraileInputActions.DEACTIVATE_TEXT_CONTROL;
+  control: ETextControlCharacters;
+}
+
+type BraileInputActions = IActivatePosition_Action | IDeactivatePosition_Action | IActivateTextControl_Action | IDeactivateTextControl_Action;
 
 const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActions): IBrailleInputState => {
   switch (action.type) {
@@ -64,18 +70,24 @@ const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActio
                 char: newCharacter,
                 time: Date.now(),
               };
-            }            
+            }
             draft.activatedPositions.clear();
             draft.activePositions.clear();
             if (BrailleUtils.isTextHistoryCharacter(newCharacter)) {
               draft.textHistory = draft.textHistory + newCharacter;
-            }            
+            }
           }
         );
       } else {
         return newState;
       }
-    } case EBraileInputActions.PERFORM_TEXT_CONTROL: {
+    } case EBraileInputActions.ACTIVATE_TEXT_CONTROL: {
+      return produce<IBrailleInputState>(state,
+        (draft): void => {
+          draft.activeTextControl.add(action.control);
+        }
+      );
+    } case EBraileInputActions.DEACTIVATE_TEXT_CONTROL: {
       if (action.control === ETextControlCharacters.SPACE) {
         const newCharacter = " ";
         return produce<IBrailleInputState>(state,
@@ -88,13 +100,15 @@ const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActio
             // Just allow spaces without resetting positions.
             if (BrailleUtils.isTextHistoryCharacter(newCharacter)) {
               draft.textHistory = draft.textHistory + newCharacter;
-            }            
+            }
+            draft.activeTextControl.delete(ETextControlCharacters.SPACE);
           }
         );
       } else if (action.control === ETextControlCharacters.BACKSPACE) {
         return produce<IBrailleInputState>(state,
           (draft): void => {
             draft.textHistory = draft.textHistory.slice(0, -1);
+            draft.activeTextControl.delete(ETextControlCharacters.BACKSPACE);
           }
         );
       } else {
@@ -113,9 +127,8 @@ export default function BrailleContainer() {
 
   console.log("BrailleContainer called.");
 
-  const handleTextControlCharacters = useCallback((key: string): boolean => {
+  const onKeyDown_TextControl = useCallback((key: string): boolean => {
     let controlType: ETextControlCharacters = ETextControlCharacters.NONE;
-    // FIXME: Make const.
     if (key === HotkeyUtils.getHotkeyByPosition(ETextControlCharacters.SPACE)) {
       controlType = ETextControlCharacters.SPACE;
     } else if (key === HotkeyUtils.getHotkeyByPosition(ETextControlCharacters.BACKSPACE)) {
@@ -124,16 +137,22 @@ export default function BrailleContainer() {
       return false;
     }
     dispatchBraileInputState({
-      type: EBraileInputActions.PERFORM_TEXT_CONTROL,
+      type: EBraileInputActions.ACTIVATE_TEXT_CONTROL,
       control: controlType,
     });
     return true;
   }, []);
-  
+
   const onKeyDown = useCallback((event: KeyboardEvent): void => {
     // TODO: Customizable hotkeys.
     const key = event.key;
-    const wasControlCharacter = handleTextControlCharacters(key);
+
+    if (HotkeyUtils.isKeyInHotkeyMap(key)) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    const wasControlCharacter = onKeyDown_TextControl(key);
     if (wasControlCharacter) {
       return;
     }
@@ -161,7 +180,7 @@ export default function BrailleContainer() {
       type: EBraileInputActions.ACTIVATE_POSITION,
       position: positionToAdd,
     });
-  }, [handleTextControlCharacters]);
+  }, [onKeyDown_TextControl]);
 
   const WINDOW_EVENT_KEYDOWN_NAME = "keydown";
   useWindowEvent(WINDOW_EVENT_KEYDOWN_NAME, onKeyDown);
@@ -172,8 +191,35 @@ export default function BrailleContainer() {
     };
   }, [onKeyDown]);
 
+  const onKeyUp_TextControl = useCallback((key: string): boolean => {
+    let controlType: ETextControlCharacters = ETextControlCharacters.NONE;
+    if (key === HotkeyUtils.getHotkeyByPosition(ETextControlCharacters.SPACE)) {
+      controlType = ETextControlCharacters.SPACE;
+    } else if (key === HotkeyUtils.getHotkeyByPosition(ETextControlCharacters.BACKSPACE)) {
+      controlType = ETextControlCharacters.BACKSPACE;
+    } else {
+      return false;
+    }
+    dispatchBraileInputState({
+      type: EBraileInputActions.DEACTIVATE_TEXT_CONTROL,
+      control: controlType,
+    });
+    return true;
+  }, []);
+
   const onKeyUp = useCallback((event: KeyboardEvent): void => {
     const key = event.key;
+
+    if (HotkeyUtils.isKeyInHotkeyMap(key)) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    const wasControlCharacter = onKeyUp_TextControl(key);
+    if (wasControlCharacter) {
+      return;
+    }
+
     let positionToRemove = EBraillePositions.NONE;
     if (key === HotkeyUtils.getHotkeyByPosition(EBraillePositions.L1)) {
       positionToRemove = EBraillePositions.L1;
@@ -191,11 +237,12 @@ export default function BrailleContainer() {
       // TODO: Handle space and backspace.
       return;
     }
+    
     dispatchBraileInputState({
       type: EBraileInputActions.DEACTIVATE_POSITION,
       position: positionToRemove,
     });
-  }, []);
+  }, [onKeyUp_TextControl]);
 
   const WINDOW_EVENT_KEYUP_NAME = "keyup";
   useWindowEvent(WINDOW_EVENT_KEYUP_NAME, onKeyUp);

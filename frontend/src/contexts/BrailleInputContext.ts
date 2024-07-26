@@ -1,6 +1,4 @@
-import { EBraillePositions } from "@/lib/braille/BrailleDefs";
-import HotkeyBimap from "@/lib/hotkeys/HotkeyBimap";
-import HotkeyUtils from "@/lib/hotkeys/HotkeyUtils";
+import { EBraillePositions, ETextControlCharacters } from "@/lib/braille/BrailleDefs";
 import { createContext } from "react";
 
 export interface IBrailleLastCharacterInput {
@@ -16,6 +14,7 @@ export const BRAILE_LAST_CHARACTER_INPUT_DEFAULT: IBrailleLastCharacterInput = {
 export interface IBrailleInputState {
   activatedPositions: Set<EBraillePositions>;
   activePositions: Set<EBraillePositions>;
+  activeTextControl: Set<ETextControlCharacters>;
   lastCharacter: IBrailleLastCharacterInput;
   textHistory: string;
 }
@@ -25,6 +24,7 @@ export interface IBrailleInputContext extends IBrailleInputState { }
 export const BrailleInputContext_DEFAULT: IBrailleInputContext = {
   activatedPositions: new Set(),
   activePositions: new Set(),
+  activeTextControl: new Set(),
   lastCharacter: BRAILE_LAST_CHARACTER_INPUT_DEFAULT,
   textHistory: "",
 };

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import BrailleCircle from "./BrailleCircle";
-import { EBraillePositions } from "@/lib/braille/BrailleDefs";
+import { EBraillePositions } from "../../lib/braille/BrailleDefs";
 
 const meta = {
   title: "Braille/BrailleCircle",

@@ -1,3 +1,4 @@
+import { KeyboardPositions } from "../hotkeys/HotkeyDefs";
 import { BrailleCharMap, CHARACTER_NOT_FOUND, EBraillePositions } from "./BrailleDefs";
 import BrailleTrie from "./BrailleTrie";
 
