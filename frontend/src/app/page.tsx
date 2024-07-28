@@ -1,100 +1,84 @@
-"use client";
+import { Flex, Text, Title } from "@mantine/core";
+import BrailleAppContainer from "../components/BrailleAppContainer/BrailleAppContainer";
+import React from "react";
 
-import BrailleContainer from "../components/BrailleContainer/BrailleContainer";
-import BrailleUtils from "../lib/braille/BrailleUtils";
-import { Button, Card, Flex, List, Text, Title } from "@mantine/core";
-import { enableMapSet } from "immer";
+interface ITextSection {
+  title: string;
+  bodyLines: string[];
+}
 
-enableMapSet();
+const TEXT_SECTIONS: ITextSection[] = [
+  {
+    title: "Quick Notes",
+    bodyLines: [
+      "The native iOS braille keyboard relies on gestures to input characters like spaces, backspaces, and returns.",
+      "For the Braille Typing Trainer, use the Spacebar for spaces and the Backspace key for deletions.",
+      "The Braille Typing Trainer does not support gestures.",
+      "The Braille Typing Trainer only currently supports lowercase letters.",
+    ],
+  },
+  {
+    title: "About",
+    bodyLines: [
+      "Braille Typing Trainer is a free web-based application designed to help users practice braille keyboard typing conveniently from their browser.",
+      "Whether you're a beginner learning braille or an advanced user looking to enhance your typing speed and accuracy, Braille Typing Trainer offers an accessible solution.",
+    ],
+  },
+  {
+    title: "Why Learn Braille Typing If I'm Not Visually Impaired?",
+    bodyLines: [
+      "Even if you are not visually impaired, learning to type in braille (and visionless device navigation) will allow you to fully use your device without vision.",
+      "In particular, the ability to use your mobile device while walking without having to look down.",
+      "For individuals who do a lot of walking, being able to move and use a device safely can lead to greater productivity and an improved quality of life.",
+    ],
+  },
+];
 
 export default function HomePage() {
 
-  const renderBrailleAlphabet = (): JSX.Element => {
+  const renderTextSection = (section: ITextSection): JSX.Element => {
+    return (
+      <Flex
+        justify="center"
+        align="center"
+        direction="column"
+        wrap="wrap"
+        key={section.title}
+      >
+        <Title order={2} className="text-center" mt="xl" mb="xl">
+          {section.title}
+        </Title>
+        <Text ta="center">
+          {
+            section.bodyLines.map((line: string, index: number): JSX.Element => {
+              let lineBreak: JSX.Element | null = <br />;
+              if (index === section.bodyLines.length - 1) {
+                lineBreak = null;
+              }
+              return (
+                <React.Fragment key={index}>
+                  {line}
+                  {lineBreak}
+                </React.Fragment>
+              );
+            })
+          }
+        </Text>
+      </Flex>
+    );
+  };
+
+  const renderTextSections = (): JSX.Element => {
     const elements: JSX.Element[] = [];
-    BrailleUtils.US_SIX_DOT_LETTER_BRAILE_MAP.forEach(
-      (braille: string, letter: string): void => {
-        elements.push((
-          <Card bg={"blue.3"} pb={0} pt={"xs"} pl={"xs"} pr={"xs"} key={letter}>
-            <Flex
-              justify="center"
-              align="center"
-              direction="column"
-              wrap="wrap"
-            >
-              <Text fw={500}>
-                {letter}
-              </Text>
-              <Text fz={"4em"} lh={"1em"}>
-                {braille}
-              </Text>
-            </Flex>
-          </Card>
-        ));
+    TEXT_SECTIONS.forEach(
+      (section: ITextSection): void => {
+        elements.push(renderTextSection(section));
       }
     );
     return (
-      <Flex
-        gap="xs"
-        justify="center"
-        align="center"
-        direction="row"
-        wrap="wrap"
-        mt={"xl"}
-        w="50%"
-      >
+      <React.Fragment>
         {elements}
-      </Flex>
-    );
-  };
-
-  const renderQuickNotesSection = (): JSX.Element => {
-    return (
-      <Flex
-        justify="center"
-        align="center"
-        direction="column"
-        wrap="wrap"
-      >
-        <Title order={2} className={"text-center"} mt={"xl"} mb={"xl"}>
-          Quick Notes
-        </Title>
-        <List withPadding={true} type={"unordered"} listStyleType="disc">
-          <List.Item>
-            The Braille Typing Trainer does not currently support mobile.
-          </List.Item>
-          <List.Item>
-            The native iOS braille keyboard relies on gestures to input characters like spaces, backspaces, and returns.
-          </List.Item>
-          <List.Item>
-            For the Braille Typing Trainer, use the Spacebar for spaces and the Backspace key for deletions.
-          </List.Item>
-          <List.Item>
-            The Braille Typing Trainer does not support gestures.
-          </List.Item>
-          <List.Item>
-            The Braille Typing Trainer does not currently support numbers.
-          </List.Item>
-        </List>
-      </Flex>
-    );
-  };
-
-  const renderAboutSection = (): JSX.Element => {
-    return (
-      <Flex
-        justify="center"
-        align="center"
-        direction="column"
-        wrap="wrap"
-      >
-        <Title order={2} className={"text-center"} mt={"xl"} mb={"xl"}>
-          About
-        </Title>
-        <Text maw={"50%"} ta={"center"}>
-          Braille Typing Trainer is a free web-based application designed to help users practice braille keyboard typing conveniently from their browser.
-          Whether you're a beginner learning braille or an advanced user looking to enhance your typing speed and accuracy, our platform offers a comprehensive and accessible solution.
-        </Text>
-      </Flex>
+      </React.Fragment>
     );
   };
 
@@ -103,11 +87,9 @@ export default function HomePage() {
       <Title order={1} className={"text-center"} mt={"xl"} mb={"xl"}>
         Braille Typing Trainer
       </Title>
-      <Flex justify="center" align="center" direction="column">
-        <BrailleContainer />
-        {renderBrailleAlphabet()}
-        {renderQuickNotesSection()}
-        {renderAboutSection()}
+      <Flex justify="center" align="center" direction="column" mb={"xl"}>
+        <BrailleAppContainer />
+        {renderTextSections()}
       </Flex>
     </div>
   );

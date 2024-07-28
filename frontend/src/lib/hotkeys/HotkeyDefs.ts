@@ -18,7 +18,6 @@ export const HOTKEY_R2_KEY_DEFAULT: string = "k";
 export const HOTKEY_R3_KEY_DEFAULT: string = "l";
 export const HOTKEY_R4_KEY_DEFAULT: string = "p";
 
-// TODO: Make const and display space as (Space) and (Backspace).
 export const HOTKEY_SPACE_KEY_DEFAULT: string = " ";
 export const HOTKEY_BACKSPACE_KEY_DEFAULT: string = "Backspace";
 

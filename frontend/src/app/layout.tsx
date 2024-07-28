@@ -2,8 +2,8 @@ import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { MantineProvider } from "@mantine/core";
-import "./globals.css";
 import "@mantine/core/styles.css";
+import "./globals.css";
 import { theme } from "../theme/theme";
 
 

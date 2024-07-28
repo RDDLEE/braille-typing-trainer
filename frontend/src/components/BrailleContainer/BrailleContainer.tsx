@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useReducer } from "react";
 import { useWindowEvent } from "@mantine/hooks";
-import { Box } from "@mantine/core";
+import { Box, Flex } from "@mantine/core";
 import { produce } from "immer";
 import { BrailleInputContext, BrailleInputContext_DEFAULT, IBrailleInputState } from "../../contexts/BrailleInputContext";
 import { EBraillePositions, ETextControlCharacters } from "../../lib/braille/BrailleDefs";
 import BrailleLayout from "../BrailleLayout/BrailleLayout";
 import BrailleUtils from "../../lib/braille/BrailleUtils";
 import HotkeyUtils from "../../lib/hotkeys/HotkeyUtils";
+import AlphabetCard from "../AlphabetCard/AlphabetCard";
 
 enum EBraileInputActions {
   ACTIVATE_POSITION = "activatePosition",
@@ -127,36 +128,62 @@ const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActio
 export default function BrailleContainer() {
   const [brailleInputState, dispatchBraileInputState] = useReducer(brailleInputReducer, { ...BrailleInputContext_DEFAULT });
 
+  const activatePosition = useCallback((position: EBraillePositions): void => {
+    if (brailleInputState.activePositions.has(position)) {
+      // If position already active.
+      return;
+    }
+    dispatchBraileInputState({
+      type: EBraileInputActions.ACTIVATE_POSITION,
+      position: position,
+    });
+  }, [brailleInputState.activePositions]);
+
+  const deactivatePosition = useCallback((position: EBraillePositions): void => {
+    dispatchBraileInputState({
+      type: EBraileInputActions.DEACTIVATE_POSITION,
+      position: position,
+    });
+  }, []);
+
+  const activateTextControl = useCallback((textControl: ETextControlCharacters): void => {
+    dispatchBraileInputState({
+      type: EBraileInputActions.ACTIVATE_TEXT_CONTROL,
+      control: textControl,
+    });
+  }, []);
+
+  const deactivateTextControl = useCallback((textControl: ETextControlCharacters): void => {
+    dispatchBraileInputState({
+      type: EBraileInputActions.DEACTIVATE_TEXT_CONTROL,
+      control: textControl,
+    });
+  }, []);
+
   const onKeyDown_TextControl = useCallback((key: string): boolean => {
-    let controlType: ETextControlCharacters = ETextControlCharacters.NONE;
+    let controlChar: ETextControlCharacters = ETextControlCharacters.NONE;
     if (key === HotkeyUtils.getHotkeyByPosition(ETextControlCharacters.SPACE)) {
-      controlType = ETextControlCharacters.SPACE;
+      controlChar = ETextControlCharacters.SPACE;
     } else if (key === HotkeyUtils.getHotkeyByPosition(ETextControlCharacters.BACKSPACE)) {
-      controlType = ETextControlCharacters.BACKSPACE;
+      controlChar = ETextControlCharacters.BACKSPACE;
     } else {
       return false;
     }
-    dispatchBraileInputState({
-      type: EBraileInputActions.ACTIVATE_TEXT_CONTROL,
-      control: controlType,
-    });
+    activateTextControl(controlChar);
     return true;
-  }, []);
+  }, [activateTextControl]);
 
   const onKeyDown = useCallback((event: KeyboardEvent): void => {
     // TODO: Customizable hotkeys.
     const key = event.key;
-
     if (HotkeyUtils.isKeyInHotkeyMap(key)) {
       event.stopPropagation();
       event.preventDefault();
     }
-
     const wasControlCharacter = onKeyDown_TextControl(key);
     if (wasControlCharacter) {
       return;
     }
-
     let positionToAdd = EBraillePositions.NONE;
     // NOTE: Could do this programmatically.
     // TODO: Need to add L4/R4 for 8 Dot.
@@ -175,12 +202,8 @@ export default function BrailleContainer() {
     } else {
       return;
     }
-
-    dispatchBraileInputState({
-      type: EBraileInputActions.ACTIVATE_POSITION,
-      position: positionToAdd,
-    });
-  }, [onKeyDown_TextControl]);
+    activatePosition(positionToAdd);
+  }, [onKeyDown_TextControl, activatePosition]);
 
   const WINDOW_EVENT_KEYDOWN_NAME = "keydown";
   useWindowEvent(WINDOW_EVENT_KEYDOWN_NAME, onKeyDown);
@@ -192,34 +215,28 @@ export default function BrailleContainer() {
   }, [onKeyDown]);
 
   const onKeyUp_TextControl = useCallback((key: string): boolean => {
-    let controlType: ETextControlCharacters = ETextControlCharacters.NONE;
+    let controlChar: ETextControlCharacters = ETextControlCharacters.NONE;
     if (key === HotkeyUtils.getHotkeyByPosition(ETextControlCharacters.SPACE)) {
-      controlType = ETextControlCharacters.SPACE;
+      controlChar = ETextControlCharacters.SPACE;
     } else if (key === HotkeyUtils.getHotkeyByPosition(ETextControlCharacters.BACKSPACE)) {
-      controlType = ETextControlCharacters.BACKSPACE;
+      controlChar = ETextControlCharacters.BACKSPACE;
     } else {
       return false;
     }
-    dispatchBraileInputState({
-      type: EBraileInputActions.DEACTIVATE_TEXT_CONTROL,
-      control: controlType,
-    });
+    deactivateTextControl(controlChar);
     return true;
-  }, []);
+  }, [deactivateTextControl]);
 
   const onKeyUp = useCallback((event: KeyboardEvent): void => {
     const key = event.key;
-
     if (HotkeyUtils.isKeyInHotkeyMap(key)) {
       event.stopPropagation();
       event.preventDefault();
     }
-
     const wasControlCharacter = onKeyUp_TextControl(key);
     if (wasControlCharacter) {
       return;
     }
-
     let positionToRemove = EBraillePositions.NONE;
     if (key === HotkeyUtils.getHotkeyByPosition(EBraillePositions.L1)) {
       positionToRemove = EBraillePositions.L1;
@@ -234,15 +251,10 @@ export default function BrailleContainer() {
     } else if (key === HotkeyUtils.getHotkeyByPosition(EBraillePositions.R3)) {
       positionToRemove = EBraillePositions.R3;
     } else {
-      // TODO: Handle space and backspace.
       return;
     }
-
-    dispatchBraileInputState({
-      type: EBraileInputActions.DEACTIVATE_POSITION,
-      position: positionToRemove,
-    });
-  }, [onKeyUp_TextControl]);
+    deactivatePosition(positionToRemove);
+  }, [onKeyUp_TextControl, deactivatePosition]);
 
   const WINDOW_EVENT_KEYUP_NAME = "keyup";
   useWindowEvent(WINDOW_EVENT_KEYUP_NAME, onKeyUp);
@@ -254,8 +266,14 @@ export default function BrailleContainer() {
   }, [onKeyUp]);
 
   return (
-    <Box>
-      <BrailleInputContext.Provider value={brailleInputState}>
+    <Box w="100%">
+      <BrailleInputContext.Provider value={{
+        ...brailleInputState,
+        activatePosition: activatePosition,
+        deactivatePosition: deactivatePosition,
+        activateTextControl: activateTextControl,
+        deactivateTextControl: deactivateTextControl,
+      }}>
         <BrailleLayout />
       </BrailleInputContext.Provider>
     </Box>

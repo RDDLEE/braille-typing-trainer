@@ -94,6 +94,14 @@ export default class BrailleUtils {
 
   private static readonly US_SIXDOT_BASE_TRIES: Map<EBraillePositions, BrailleTrie> = BrailleUtils.initUsSixDotBaseTries();
 
+  public static readonly getPositionsOfCharacter = (char: string): EBraillePositions[] => {
+    if (BrailleUtils.US_SIXDOT_BASE_CHARMAP.has(char)) {
+      return BrailleUtils.US_SIXDOT_BASE_CHARMAP.get(char)!;
+    } else {
+      throw new Error(`BrailleUtils.getPositionsOfCharacter called and failed to find char: ${char}.`);
+    }
+  };
+
   // TODO: Should take in a language, keyboard, dotsize, modifier mode.
   public static readonly convertPositionsToCharacter = (positions: EBraillePositions[]): string => {
     const basePosition = positions[0];

@@ -2,6 +2,8 @@ import { useCallback, useContext } from "react";
 import { BrailleInputContext } from "../../contexts/BrailleInputContext";
 import { EBraillePositions } from "../../lib/braille/BrailleDefs";
 import HotkeyUtils from "../../lib/hotkeys/HotkeyUtils";
+import StyleUtils from "../../lib/StyleUtils";
+import { PreviewInputContext } from "../../contexts/PreviewInputContext";
 
 export interface IBrailleCircle_Props {
   linkedPosition: EBraillePositions;
@@ -18,32 +20,48 @@ const TEXT_Y = CIRCLE_Y;
 
 export default function BrailleCircle(props: IBrailleCircle_Props) {
   const brailleInputContext = useContext(BrailleInputContext);
+  const previewInputContext = useContext(PreviewInputContext);
+
+  const linkedPosition = props.linkedPosition;
 
   const getCircleFillColor = (): string => {
-    if (brailleInputContext.activePositions.has(props.linkedPosition)) {
-      return "black";
+    if (brailleInputContext.activePositions.has(linkedPosition) || previewInputContext.positions.has(linkedPosition)) {
+      return StyleUtils.ACTIVE_PAD_COLOR;
     } else {
-      return "white";
+      return StyleUtils.INACTIVE_PAD_COLOR;
     }
     // TODO: Half states. Activated but not active position states.
   };
 
   const getTextColor = (): string => {
-    if (brailleInputContext.activePositions.has(props.linkedPosition)) {
-      return "white";
+    if (brailleInputContext.activePositions.has(linkedPosition) || previewInputContext.positions.has(linkedPosition)) {
+      return StyleUtils.ACTIVE_PAD_TEXT_COLOR;
     } else {
-      return "black";
+      return StyleUtils.INACTIVE_PAD_TEXT_COLOR;
     }
   };
 
   const getText = useCallback((): string => {
-    return HotkeyUtils.getHotkeyByPosition(props.linkedPosition);
-  }, [props.linkedPosition]);
+    return HotkeyUtils.getHotkeyByPosition(linkedPosition);
+  }, [linkedPosition]);
 
-  // TODO: Make clickable for mobile.
+  const onTouchStart_SVG = useCallback((): void => {
+    if (brailleInputContext.activatePosition !== undefined) {
+      brailleInputContext.activatePosition(linkedPosition);
+    }
+  }, [brailleInputContext, linkedPosition]);
+
+  const onTouchEnd_SVG = useCallback((): void => {
+    if (brailleInputContext.deactivatePosition !== undefined) {
+      brailleInputContext.deactivatePosition(linkedPosition);
+    }
+  }, [brailleInputContext, linkedPosition]);
+
   return (
     <div>
-      <svg width={SVG_WIDTH} height={SVG_HEIGHT} xmlns="http://www.w3.org/2000/svg">
+      <svg width={SVG_WIDTH} height={SVG_HEIGHT} xmlns="http://www.w3.org/2000/svg"
+        onTouchStart={onTouchStart_SVG} onTouchEnd={onTouchEnd_SVG}
+      >
         <circle cx={CIRCLE_X} cy={CIRCLE_Y} r="50" fill={getCircleFillColor()} stroke="black" strokeWidth="4" />
         <text x={TEXT_X} y={TEXT_Y} textAnchor="middle" fill={getTextColor()} fontSize="24" fontFamily="Arial" dominantBaseline="middle">
           {getText()}

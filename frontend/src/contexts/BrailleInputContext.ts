@@ -1,5 +1,5 @@
-import { EBraillePositions, ETextControlCharacters } from "../lib/braille/BrailleDefs";
 import { createContext } from "react";
+import { EBraillePositions, ETextControlCharacters } from "../lib/braille/BrailleDefs";
 
 export interface IBrailleLastCharacterInput {
   char: string | null;
@@ -19,7 +19,12 @@ export interface IBrailleInputState {
   textHistory: string;
 }
 
-export interface IBrailleInputContext extends IBrailleInputState { }
+export interface IBrailleInputContext extends IBrailleInputState { 
+  activatePosition?: (position: EBraillePositions) => void;
+  deactivatePosition?: (position: EBraillePositions) => void;
+  activateTextControl?: (textControl: ETextControlCharacters) => void;
+  deactivateTextControl?: (textControl: ETextControlCharacters) => void;
+}
 
 export const BrailleInputContext_DEFAULT: IBrailleInputContext = {
   activatedPositions: new Set(),

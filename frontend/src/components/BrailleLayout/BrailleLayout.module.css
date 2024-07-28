@@ -1,0 +1,19 @@
+.layout-header {
+  width: 100%;
+
+  @media (min-width: $mantine-breakpoint-xs) {
+    width: 75%;
+  }
+
+  @media (min-width: $mantine-breakpoint-sm) {
+    width: 50%;
+  }
+
+  @media (min-width: $mantine-breakpoint-lg) {
+    width: 40%;
+  }
+
+  @media (min-width: $mantine-breakpoint-xl) {
+    width: 35%;
+  }
+}
