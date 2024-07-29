@@ -27,15 +27,14 @@ const TEXT_SECTIONS: ITextSection[] = [
   {
     title: "Why Learn Braille Typing If I'm Not Visually Impaired?",
     bodyLines: [
-      "Even if you are not visually impaired, learning to type in braille (and visionless device navigation) will allow you to fully use your device without vision.",
-      "In particular, the ability to use your mobile device while walking without having to look down.",
+      "Even if you are not visually impaired, learning to type in Braille will allow you to fully use your device without sight.",
+      "In particular, this skill enables you to use your mobile device while walking without having to look down.",
       "For individuals who do a lot of walking, being able to move and use a device safely can lead to greater productivity and an improved quality of life.",
     ],
   },
 ];
 
 export default function HomePage() {
-
   const renderTextSection = (section: ITextSection): JSX.Element => {
     return (
       <Flex

@@ -45,6 +45,7 @@ export default function BrailleCircle(props: IBrailleCircle_Props) {
     return HotkeyUtils.getHotkeyByPosition(linkedPosition);
   }, [linkedPosition]);
 
+  // FIXME: Prevent default on touch.
   const onTouchStart_SVG = useCallback((): void => {
     if (brailleInputContext.activatePosition !== undefined) {
       brailleInputContext.activatePosition(linkedPosition);

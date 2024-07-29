@@ -9,11 +9,13 @@ import { PreviewInputContext } from "../../contexts/PreviewInputContext";
 import { EBraillePositions } from "../../lib/braille/BrailleDefs";
 import { enableMapSet } from "immer";
 
+console.log("Welcome to Braille Typing Trainer (v0.0.1).");
 enableMapSet();
 
 export default function BrailleAppContainer() {
-
   const [previewPositions, setPreviewPositions] = useState<Set<EBraillePositions>>(new Set());
+
+  // TODO: Add fullscreen support for BrailleContainer.
 
   const onMouseEnter_AlphabetCard = useCallback((char: string): void => {
     const positions = BrailleUtils.getPositionsOfCharacter(char);
@@ -38,15 +40,7 @@ export default function BrailleAppContainer() {
       }
     );
     return (
-      <Flex
-        gap="xs"
-        justify="center"
-        align="center"
-        direction="row"
-        wrap="wrap"
-        mt={"xl"}
-        w="100%"
-      >
+      <Flex gap="xs" justify="center" align="center" direction="row" wrap="wrap" mt={"xl"} w="100%">
         {elements}
       </Flex>
     );
