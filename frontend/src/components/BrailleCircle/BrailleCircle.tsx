@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { BrailleInputContext } from "../../contexts/BrailleInputContext";
 import { EBraillePositions } from "../../lib/braille/BrailleDefs";
 import HotkeyUtils from "../../lib/hotkeys/HotkeyUtils";
@@ -46,13 +46,13 @@ export default function BrailleCircle(props: IBrailleCircle_Props) {
   }, [linkedPosition]);
 
   // FIXME: Prevent default on touch.
-  const onTouchStart_SVG = useCallback((): void => {
+  const onTouchStart_SVG = useCallback((_event: React.TouchEvent<SVGSVGElement>): void => {
     if (brailleInputContext.activatePosition !== undefined) {
       brailleInputContext.activatePosition(linkedPosition);
     }
   }, [brailleInputContext, linkedPosition]);
 
-  const onTouchEnd_SVG = useCallback((): void => {
+  const onTouchEnd_SVG = useCallback((_event: React.TouchEvent<SVGSVGElement>): void => {
     if (brailleInputContext.deactivatePosition !== undefined) {
       brailleInputContext.deactivatePosition(linkedPosition);
     }
@@ -61,7 +61,7 @@ export default function BrailleCircle(props: IBrailleCircle_Props) {
   return (
     <div>
       <svg width={SVG_WIDTH} height={SVG_HEIGHT} xmlns="http://www.w3.org/2000/svg"
-        onTouchStart={onTouchStart_SVG} onTouchEnd={onTouchEnd_SVG}
+        onTouchStart={onTouchStart_SVG} onTouchEnd={onTouchEnd_SVG} className="touch-none"
       >
         <circle cx={CIRCLE_X} cy={CIRCLE_Y} r="50" fill={getCircleFillColor()} stroke="black" strokeWidth="4" />
         <text x={TEXT_X} y={TEXT_Y} textAnchor="middle" fill={getTextColor()} fontSize="24" fontFamily="Arial" dominantBaseline="middle">

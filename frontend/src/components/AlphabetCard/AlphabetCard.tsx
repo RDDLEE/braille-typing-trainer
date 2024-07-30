@@ -1,7 +1,4 @@
-import { useCallback, useContext } from "react";
 import { Card, Divider, Flex, Text } from "@mantine/core";
-import { BrailleInputContext } from "../../contexts/BrailleInputContext";
-import BrailleUtils from "../../lib/braille/BrailleUtils";
 
 interface IAlphabetCard_Props {
   character: string;

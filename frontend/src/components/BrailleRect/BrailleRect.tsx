@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { BrailleInputContext } from "../../contexts/BrailleInputContext";
 import { ETextControlCharacters } from "../../lib/braille/BrailleDefs";
 import HotkeyUtils from "../../lib/hotkeys/HotkeyUtils";
@@ -45,23 +45,22 @@ export default function BrailleRect(props: IBrailleRect_Props) {
     return HotkeyUtils.getDisplayableTextControlCharacter(key);
   }, [linkedPosition]);
 
-  const onTouchStart_SVG = useCallback((): void => {
+  const onTouchStart_SVG = useCallback((_event: React.TouchEvent<SVGSVGElement>): void => {
     if (brailleInputContext.activateTextControl !== undefined) {
       brailleInputContext.activateTextControl(linkedPosition);
     }
   }, [brailleInputContext, linkedPosition]);
 
-  const onTouchEnd_SVG = useCallback((): void => {
+  const onTouchEnd_SVG = useCallback((_event: React.TouchEvent<SVGSVGElement>): void => {
     if (brailleInputContext.deactivateTextControl !== undefined) {
       brailleInputContext.deactivateTextControl(linkedPosition);
     }
   }, [brailleInputContext, linkedPosition]);
 
-  // TODO: Make clickable for mobile.
   return (
     <div>
       <svg width={SVG_WIDTH} height={SVG_HEIGHT} xmlns="http://www.w3.org/2000/svg"
-        onTouchStart={onTouchStart_SVG} onTouchEnd={onTouchEnd_SVG}
+        onTouchStart={onTouchStart_SVG} onTouchEnd={onTouchEnd_SVG} className="touch-none"
       >
         <rect x="0" width={RECT_WIDTH} height={RECT_HEIGHT} rx="5" ry="5" fill={getRectFillColor()} stroke="black" strokeWidth="5" />
         <text x={TEXT_X} y={TEXT_Y} textAnchor="middle" fill={getTextColor()} fontSize="12" fontWeight={700} fontFamily="Arial" dominantBaseline="middle">

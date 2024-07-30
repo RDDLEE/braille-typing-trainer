@@ -16,7 +16,6 @@ export default function BrailleAppContainer() {
   const [previewPositions, setPreviewPositions] = useState<Set<EBraillePositions>>(new Set());
 
   // TODO: Add fullscreen support for BrailleContainer.
-
   const onMouseEnter_AlphabetCard = useCallback((char: string): void => {
     const positions = BrailleUtils.getPositionsOfCharacter(char);
     setPreviewPositions(new Set(positions));

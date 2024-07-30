@@ -99,8 +99,6 @@ const brailleInputReducer = (state: IBrailleInputState, action: BraileInputActio
               char: newCharacter,
               time: Date.now(),
             };
-            // FIXME: If space is entered while keys are pressed, intended behavior is not yet planned.
-            // Just allow spaces without resetting positions.
             if (BrailleUtils.isTextHistoryCharacter(newCharacter)) {
               draft.textHistory = draft.textHistory + newCharacter;
             }
