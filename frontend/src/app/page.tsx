@@ -1,6 +1,6 @@
+import React from "react";
 import { Flex, Text, Title } from "@mantine/core";
 import BrailleAppContainer from "../components/BrailleAppContainer/BrailleAppContainer";
-import React from "react";
 
 interface ITextSection {
   title: string;
@@ -13,10 +13,12 @@ const TEXT_SECTIONS: ITextSection[] = [
     bodyLines: [
       "The native iOS braille keyboard relies on gestures to input characters like spaces, backspaces, and returns.",
       "For the Braille Typing Trainer, use the Spacebar for spaces and the Backspace key for deletions.",
-      "The Braille Typing Trainer does not support gestures.",
+      "The Braille Typing Trainer does not currently support gestures.",
       "The Braille Typing Trainer only currently supports lowercase letters.",
+      "Support for other characters and modes is planned.",
     ],
   },
+  // TODO: How to use section.
   {
     title: "About",
     bodyLines: [
@@ -28,8 +30,9 @@ const TEXT_SECTIONS: ITextSection[] = [
     title: "Why Learn Braille Typing If I'm Not Visually Impaired?",
     bodyLines: [
       "Even if you are not visually impaired, learning to type in Braille will allow you to fully use your device without sight.",
-      "In particular, this skill enables you to use your mobile device while walking without having to look down.",
-      "For individuals who do a lot of walking, being able to move and use a device safely can lead to greater productivity and an improved quality of life.",
+      "In other words, this skill enables you to use your mobile device without having to look down.",
+      "This ability might prove useful for individuals who do a lot of walking.",
+      "Being able to safely walk and use a device can lead to greater productivity and an improved quality of life.",
     ],
   },
 ];

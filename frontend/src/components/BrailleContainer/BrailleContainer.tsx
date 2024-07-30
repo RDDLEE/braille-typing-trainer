@@ -2,14 +2,13 @@
 
 import { useCallback, useEffect, useReducer } from "react";
 import { useWindowEvent } from "@mantine/hooks";
-import { Box, Flex } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { produce } from "immer";
 import { BrailleInputContext, BrailleInputContext_DEFAULT, IBrailleInputState } from "../../contexts/BrailleInputContext";
 import { EBraillePositions, ETextControlCharacters } from "../../lib/braille/BrailleDefs";
 import BrailleLayout from "../BrailleLayout/BrailleLayout";
 import BrailleUtils from "../../lib/braille/BrailleUtils";
 import HotkeyUtils from "../../lib/hotkeys/HotkeyUtils";
-import AlphabetCard from "../AlphabetCard/AlphabetCard";
 
 enum EBraileInputActions {
   ACTIVATE_POSITION = "activatePosition",

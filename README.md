@@ -6,7 +6,7 @@ The web app can be accessed over the internet at https://braille-typing-trainer.
 
 ## Features
 
-**Braille Typing Trainer** is currently still in development and currently supports limited features.
+**Braille Typing Trainer** is in development and currently supports limited features.
 
 Planned features include:
 
@@ -30,7 +30,7 @@ Planned features include:
     - Mantine UI.
     - Storybook.
     - Vitest.
-  - Backend
+  - Backend (TODO)
     - Spring Boot.
     - Java.
     - Maven.
